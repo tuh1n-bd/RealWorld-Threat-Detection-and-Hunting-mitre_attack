@@ -1,4 +1,4 @@
-# RealWorld Threat Detection and Hunting — MITRE ATT&CK Splunk Detections
+[MITRE_dashboard.xml.txt](https://github.com/user-attachments/files/21716229/MITRE_dashboard.xml.txt)# RealWorld Threat Detection and Hunting — MITRE ATT&CK Splunk Detections
 
 Welcome to the **RealWorld Threat Detection and Hunting** repository, focused on advanced Splunk SPL queries and dashboards designed to detect and investigate real-world cyber attack scenarios mapped to the MITRE ATT&CK framework.
 
@@ -30,6 +30,7 @@ Detects multiple failed login attempts, which may indicate brute force attacks.
 ```spl
 index=security EventID=4625 | stats count by Account_Name, Source_IP
 
+ 
 How to Use
 Clone this repository:
 
