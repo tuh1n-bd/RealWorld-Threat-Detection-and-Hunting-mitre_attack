@@ -272,33 +272,171 @@ index="sim1" sourcetype="cvs"
 | search CommandLine="*powershell*" (CommandLine="*-enc*" OR CommandLine="*-encodedCommand*")
 | table _time Account_Name ComputerName CommandLine MITRE_Technique
 | sort - _time
-________________________________________
 🔍 Explanation of SPL
 SPL Segment	Explanation
 CommandLine="*powershell*"	Filters PowerShell executions
 *-enc* or *-encodedCommand*	Detects Base64-encoded payload usage
 table	Displays essential context fields
 sort - _time	Shows most recent events first
-
+____
 🔸 Detection 1.26 — Credential Dumping via Mimikatz
 MITRE Technique: T1003 – OS Credential Dumping
+--
 🔍 SPL Query:
-spl:
+
 index="sim1" sourcetype="cvs"
 CommandLine="*mimikatz*"
 | stats count by Account_Name, CommandLine, ComputerName, _time
+_____
 🧠 Explanation:
 •	mimikatz.exe is a well-known tool for stealing plaintext passwords, hashes, and Kerberos tickets.
 •	Even a reference to mimikatz in CommandLine is highly suspicious.
+____
 
+🔸 Detection 1.27 — Base64 Encoded PowerShell Execution
+MITRE Technique: T1059.001 – PowerShell
+Sub-technique: Obfuscated Command Execution
+---
+🔍 SPL Query:
 
+index="sim1" sourcetype="cvs"
+CommandLine="*powershell* -enc*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+_____
+🧠 Explanation:
+•	This detects powershell -enc, where encoded Base64 commands are run to hide the actual payload.
+•	Very common in phishing payloads and malware loaders.
+____
+🔸 Detection 1.28 — Remote File Download via Invoke-WebRequest
+MITRE Technique: T1105 – Ingress Tool Transfer
+---
+🔍 SPL Query:
 
+index="sim1" sourcetype="cvs"
+CommandLine="*Invoke-WebRequest*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+______
+🧠 Explanation:
+•	This detects Invoke-WebRequest, a PowerShell cmdlet used to download tools, payloads, or second-stage malware.
+•	Key for detecting infection or initial access phases.
+____
+🔹 Detection 1.33 — Execution of Obfuscated Scripts using cmd.exe /c
+MITRE Technique: T1059.003 – Command and Scripting Interpreter: Windows Command Shell
+--
+🔍 SPL Query:
 
-=================================================
-=================================================
-
-# Image:
+index="sim1" sourcetype="cvs"
+CommandLine="*cmd.exe /c*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+____
+🧠 Explanation:
+•	cmd.exe /c tells Windows to run a command, then exit — often used for automation or obfuscated execution.
+•	Often paired with encoded PowerShell or scripting payloads.
+___________
+### Image: 1.33, 1.35
 https://media.licdn.com/dms/image/v2/D4E22AQGOeOq4c0fSbg/feedshare-shrink_1280/B4EZifgqgQGUAk-/0/1755022797670?e=1758153600&v=beta&t=Z-QAgthdES_RezGf2BZzkKrF4iuQRiFz6k0-IDd0azM
+--
+🔹 Detection 1.35 — Suspicious CommandLine Execution Involving Encoded Scripts
+MITRE Technique: T1059.001 – PowerShell
+--
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*powershell* *-EncodedCommand*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+___
+🧠 Explanation:
+•	Variation of base64 PowerShell encoding detection.
+•	This syntax is typical of obfuscated or malicious scripts run via -EncodedCommand.
+____
+🔹 Detection 1.37 — Suspicious Use of whoami via cmd.exe
+MITRE Technique: T1033 – System Owner/User Discovery
+--
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*cmd.exe*whoami*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+___
+🧠 Explanation:
+•	Attackers use whoami to learn about the current user context after gaining access.
+•	This is useful for privilege escalation decisions.
+___
+### Image: 1.37, 1.40
+https://media.licdn.com/dms/image/v2/D4E22AQGRUyoDN-qqwA/feedshare-shrink_1280/B4EZijqsJwGYAk-/0/1755092534540?e=1758153600&v=beta&t=qxEBGDXkebBcVvTLmTGxqcl5wfjD6Rq7pA7sICXUyNI
+--
+🔹 Detection 1.40 — Use of Invoke-WebRequest in PowerShell
+MITRE Technique: T1105 – Ingress Tool Transfer
+--
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*Invoke-WebRequest*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+
+🧠 Explanation:
+•	Invoke-WebRequest is commonly used in PowerShell to download payloads or interact with C2.
+•	This detection reveals PowerShell-based download activity.
+____________________________
+🔹 Detection 1.41 — PowerShell Encoded Command Execution
+MITRE Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
+--
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*powershell*"
+| search CommandLine="*-enc*" OR CommandLine="*-encodedcommand*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+____________________________________________________
+🧠 Explanation:
+•	Attackers use encoded PowerShell to obfuscate commands.
+•	-enc or -encodedcommand is a red flag.
+____________________
+###Image: 1.41, 1.47
+https://media.licdn.com/dms/image/v2/D4D22AQF_swgEUgiX8Q/feedshare-shrink_1280/B4DZiZ6FKiGkAo-/0/1754928797072?e=1758153600&v=beta&t=BipsVUx_gV-H-1nSmzkdY_ihHjQP3acQxCGqT_kTTes
+----
+🔹 Detection 1.47 — Execution of Mimikatz
+MITRE Technique: T1003 – OS Credential Dumping
+____________________
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*mimikatz*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+________________________________________________________
+🧠 Explanation:
+•	mimikatz is a well-known tool for dumping credentials from LSASS memory.
+•	Any execution of mimikatz.exe should raise high-priority alerts
+-------------------------------------
+
+🔹 Detection 1.50 — Use of whoami Command (Reconnaissance)
+MITRE Technique: T1033 – System Owner/User Discovery
+________________________________________________________
+🔍 SPL Query:
+
+index="sim1" sourcetype="cvs"
+CommandLine="*whoami*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+_________________________________________________________________
+🧠 Explanation:
+•	whoami is used by attackers to check the current user context, privilege level, or domain info.
+•	Often appears early in attack chains as recon.
+
+
+
+
+
+
+
+
+
+
+
+
+
+=================================================
+=================================================
+
 
 
 How to Use
