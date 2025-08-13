@@ -19,6 +19,10 @@ The following detection queries have been successfully tested and are included:
 -----------------------------------------------------------------------------------------
 
 ## Sample Detection Description
+
+
+
+
 🔹  Detection 1.1 — Successful Logon Event Tracking
 MITRE Technique: [T1078] Valid Accounts (Track successful logons using EventID
 4624 )
@@ -28,7 +32,7 @@ Explanation:
 •	LogonType: Identifies how the user logged on (e.g., RDP, local, network).
 •	This is useful to baseline normal login behavior.
 
-```spl
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" EventID=4624
 | stats count by Account_Name, ComputerName, Source_IP, LogonType
 | sort - count
@@ -42,7 +46,7 @@ Goal: Detect brute-force attacks from a single source IP attempting multiple log
 •	Source_IP and Account_Name: Grouped to identify if a single IP is trying many different or same usernames.
 •	count >= 5: Threshold to flag potential brute force.
 •	Use Case: An attacker may guess passwords by repeatedly trying logins — this identifies such patterns.
-
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv"
 EventID=4625
 | stats count by Source_IP, Account_Name
@@ -60,6 +64,7 @@ Goal: Detect cases where a user had multiple failed logon attempts followed by a
 o	If a user has ≥3 failed attempts (4625) followed by at least 1 success (4624), it's highly suspicious.
 •	Use Case: Brute-force password guessing that eventually succeeds.
 
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv"
 (EventID=4625 OR EventID=4624)
 | stats values(EventID) as event_list count(eval(EventID=4625)) as failed_attempts,
@@ -78,6 +83,7 @@ o	Type 3 = Network
 o	Type 10 = Remote (RDP)
 Logic: We want to catch high-privilege accounts logging into systems, especially if the account is not commonly used or seen before.
 
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv"
 EventID=4624 AND ElevatedPrivileges="Yes"
 | stats count by Account_Name, Source_IP, ComputerName, LogonType
@@ -93,6 +99,7 @@ Goal: Identify user accounts that log in very rarely, which could indicate accou
 •	where count < avg_logons = show users logging in less than average.
 •	Assumption: Rare logons might indicate newly active accounts used by attackers (e.g., old unused or service accounts).
 
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" EventID=4624
 | stats count by Account_Name
 | eventstats avg(count) as avg_logons
@@ -110,6 +117,7 @@ Objective: Detect brute force attempts — several failed login attempts followe
 •	failed_count >= 3: Looks for 3+ failed attempts
 •	last_event = 4624: Indicates a successful login happened at the end, which can suggest a brute-force success.
 
+spl:
 index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" (EventID=4625 OR EventID=4624)
 | stats values(EventID) as event_list count(eval(EventID=4625)) as failed_count latest(EventID) as last_event by Account_Name, Source_IP
 | where failed_count >= 3 AND last_event=4624
@@ -129,6 +137,7 @@ BY Account_Name	Groups the stats per user
 where unique_ips > 1	Filters for users who logged in from more than one IP
 sort - unique_ips	Sorts users by highest number of IPs used
 
+spl:
 index="sim1" sourcetype="cvs"
 | stats dc(Source_IP) AS unique_ips values(Source_IP) AS ips_list BY Account_Name
 | where unique_ips > 1
@@ -150,6 +159,7 @@ like(Account_Name, "%$")	Detects Windows built-in/admin accounts ending in $
 stats count BY ...	Shows number of times these accounts appeared
 sort - count	Prioritizes most active service accounts
 
+spl:
 index="sim1" sourcetype="cvs"
 | where like(Account_Name, "svc_%") OR like(Account_Name, "%$") OR like(Account_Name, "backup_%")
 | stats count BY Account_Name, ComputerName, Source_IP
@@ -172,6 +182,7 @@ values(ComputerName)	Lists those hosts
 where unique_hosts >= 3	Filters users who accessed 3+ different systems in 10 minutes
 sort - _time	Shows latest activity first
 
+spl:
 index="sim1" sourcetype="cvs"
 | bin _time span=10m
 | stats dc(ComputerName) AS unique_hosts values(ComputerName) AS hosts BY Account_Name, _time
@@ -194,6 +205,7 @@ CommandLine="*-enc*" OR "-e *"	Looks for encoded/shortened command switches
 table	Displays relevant fields for analysis
 sort - _time	Shows recent activity first
 
+spl:
 index="sim1" sourcetype="cvs"
 | search CommandLine="*powershell*" CommandLine="*-enc*" OR CommandLine="*-e *"
 | table _time Account_Name ComputerName CommandLine MITRE_Technique
@@ -216,11 +228,68 @@ CommandLine="*sekurlsa*" / *logonpasswords*	Common Mimikatz modules
 table	Returns key investigation fields
 sort - _time	Recent activity on top
 
+spl:
 index="sim1" sourcetype="cvs"
 | search CommandLine="*mimikatz*" OR CommandLine="*lsass*" OR CommandLine="*sekurlsa*" OR CommandLine="*logonpasswords*"
 | table _time Account_Name ComputerName CommandLine MITRE_Technique
 | sort - _time
 
+🔸 Detection 1.16 — PowerShell Base64 Encoded Execution
+________________________________________
+📖 MITRE ATT&CK Mapping
+•	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
+•	Tactic: Execution
+________________________________________
+🎯 Objective
+Detect obfuscated or encoded PowerShell execution, often used by attackers to bypass security controls.
+________________________________________
+🧠 SPL Detection Logic
+spl:
+index="sim1" sourcetype="cvs"
+| search CommandLine="*powershell*" CommandLine="*-enc*" 
+| table _time Account_Name ComputerName CommandLine MITRE_Technique
+| sort - _time
+________________________________________
+🔍 Explanation of SPL
+SPL Part	Description
+CommandLine="*powershell*"	Finds any PowerShell execution
+CommandLine="*-enc*"	Targets the -enc or -encodedCommand flag, which is used to run base64-encoded PowerShell commands
+table	Filters output to the essential fields
+sort - _time	Shows the most recent events first
+
+🔸 Detection 1.19 — PowerShell Base64 Encoded Commands
+________________________________________
+📖 MITRE ATT&CK Mapping
+•	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
+•	Tactic: Execution
+________________________________________
+🎯 Objective
+Detect PowerShell commands that use Base64-encoded payloads via -enc or -encodedCommand. This is a common obfuscation method used by attackers to hide their real commands.
+________________________________________
+🧠 SPL Detection Logic
+spl:
+index="sim1" sourcetype="cvs"
+| search CommandLine="*powershell*" (CommandLine="*-enc*" OR CommandLine="*-encodedCommand*")
+| table _time Account_Name ComputerName CommandLine MITRE_Technique
+| sort - _time
+________________________________________
+🔍 Explanation of SPL
+SPL Segment	Explanation
+CommandLine="*powershell*"	Filters PowerShell executions
+*-enc* or *-encodedCommand*	Detects Base64-encoded payload usage
+table	Displays essential context fields
+sort - _time	Shows most recent events first
+
+🔸 Detection 1.26 — Credential Dumping via Mimikatz
+MITRE Technique: T1003 – OS Credential Dumping
+🔍 SPL Query:
+spl:
+index="sim1" sourcetype="cvs"
+CommandLine="*mimikatz*"
+| stats count by Account_Name, CommandLine, ComputerName, _time
+🧠 Explanation:
+•	mimikatz.exe is a well-known tool for stealing plaintext passwords, hashes, and Kerberos tickets.
+•	Even a reference to mimikatz in CommandLine is highly suspicious.
 
 
 
