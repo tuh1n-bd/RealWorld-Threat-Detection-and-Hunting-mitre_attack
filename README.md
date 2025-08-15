@@ -26,7 +26,7 @@ The following detection queries have been successfully tested and are included:
 🔹  Detection 1.1 — Successful Logon Event Tracking
 MITRE Technique: [T1078] Valid Accounts (Track successful logons using EventID
 4624 )
-
+---
 Explanation:
 •	EventID=4624: Indicates a successful logon.
 •	LogonType: Identifies how the user logged on (e.g., RDP, local, network).
@@ -40,6 +40,7 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 🔹  Detection 1.2 – Multiple Failed Logon Attempts by Single Source IP
 MITRE Technique: [T1110] Brute Force
 Goal: Detect brute-force attacks from a single source IP attempting multiple logins.
+ ----
  
 🔍 Explanation
 •	EventID=4625: This represents failed logon attempts in Windows security logs.
@@ -56,6 +57,7 @@ EventID=4625
 🔹 Detection 1.3 — Successful Logon After Multiple Failures
 MITRE Technique: [T1110] Brute Force → Credential Access
 Goal: Detect cases where a user had multiple failed logon attempts followed by a successful one — indicating possible password guessing success.
+--
 🔍 Explanation
 •	EventID 4625: Failed logon attempt.
 •	EventID 4624: Successful logon.
@@ -74,6 +76,7 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv"
 🔹 Detection 1.4 — Privileged Logon Detection
 MITRE Technique: [T1078.002] Valid Accounts: Domain Accounts
 Goal: Detect logon events where privileged (admin-level) accounts are used — especially if unexpected.
+---
 🔍 Explanation
 •	EventID 4624: Successful logon.
 •	ElevatedPrivileges="Yes": Indicates admin-level privileges were used.
@@ -91,6 +94,7 @@ EventID=4624 AND ElevatedPrivileges="Yes"
 🔹 Detection 1.5 — Rare User Logon Detection
 MITRE Technique: [T1078] Valid Accounts
 Goal: Identify user accounts that log in very rarely, which could indicate account compromise, misuse, or initial foothold.
+----
 
 🔍 Explanation
 •	EventID 4624 = successful logon events.
@@ -109,6 +113,7 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 🔹 Detection 1.7 — Multiple Failed Logons Followed by Success
 MITRE ATT&CK Technique: [T1110] Brute Force
 Objective: Detect brute force attempts — several failed login attempts followed closely by a successful login from the same IP and user.
+---
 
 🔍 Explanation Breakdown
 •	EventID=4625: Failed logon
@@ -127,6 +132,7 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" (E
 •	Technique: T1078 – Valid Accounts
 •	Tactic: Credential Access / Defense Evasion
 Goal: Detect if a single user logs in from multiple different Source IPs in a short time — a common sign of credential compromise or lateral movement.
+--
 
 🧠 Explanation of SPL:
 Part	What It Does
@@ -144,11 +150,10 @@ index="sim1" sourcetype="cvs"
 | sort - unique_ips
 
 🔸 Detection 1.11 — Suspicious Use of Service Accounts
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1078.003 – Valid Accounts: Local Accounts
 •	Tactic: Initial Access / Persistence / Privilege Escalation
-________________________________________
+--
 🎯 Objective
 Detect service accounts (e.g., accounts like svc_, admin$, or backup_user) being used interactively or in ways that aren't typical (such as interactive logins or lateral movement).
 
@@ -166,11 +171,10 @@ index="sim1" sourcetype="cvs"
 | sort - count
 
 🔸 Detection 1.12 — Multiple Hosts Accessed by Same User in Short Time
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1021 – Remote Services
 •	Tactic: Lateral Movement
-________________________________________
+---
 🎯 Objective
 Detect users who access multiple different hosts within a short time window, indicating potential lateral movement activity.
 
@@ -190,11 +194,10 @@ index="sim1" sourcetype="cvs"
 | sort - _time
 
 🔸 Detection 1.13 — Suspicious Use of Encoded Commands
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
 •	Tactic: Execution
-________________________________________
+--
 🎯 Objective
 Detect the use of encoded PowerShell commands, which is a common obfuscation technique used by attackers to hide malicious activity.
 
@@ -212,11 +215,10 @@ index="sim1" sourcetype="cvs"
 | sort - _time
 
 🔸 Detection 1.14 — Use of Mimikatz or Credential Dumping Tools
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1003 – OS Credential Dumping
 •	Tactic: Credential Access
-________________________________________
+---
 🎯 Objective
 Detect execution of Mimikatz or other known credential dumping tools, often used by attackers to extract passwords and hashes from memory or SAM/LSASS.
 
@@ -235,11 +237,10 @@ index="sim1" sourcetype="cvs"
 | sort - _time
 
 🔸 Detection 1.16 — PowerShell Base64 Encoded Execution
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
 •	Tactic: Execution
-________________________________________
+----
 🎯 Objective
 Detect obfuscated or encoded PowerShell execution, often used by attackers to bypass security controls.
 ________________________________________
@@ -258,11 +259,10 @@ table	Filters output to the essential fields
 sort - _time	Shows the most recent events first
 
 🔸 Detection 1.19 — PowerShell Base64 Encoded Commands
-________________________________________
 📖 MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
 •	Tactic: Execution
-________________________________________
+---
 🎯 Objective
 Detect PowerShell commands that use Base64-encoded payloads via -enc or -encodedCommand. This is a common obfuscation method used by attackers to hide their real commands.
 ________________________________________
@@ -306,6 +306,12 @@ _____
 🧠 Explanation:
 •	This detects powershell -enc, where encoded Base64 commands are run to hide the actual payload.
 •	Very common in phishing payloads and malware loaders.
+
+### Image: 1.27 and 1.28
+https://media.licdn.com/dms/image/v2/D4E22AQE7BfiTzsmV6w/feedshare-shrink_2048_1536/B4EZiplkggGYAs-/0/1755191855853?e=1758153600&v=beta&t=ZCsBEgG3yjk-m9kdrWk7W4Ot_ZHTn6ukS2cQaXNe30w
+---
+
+
 ____
 🔸 Detection 1.28 — Remote File Download via Invoke-WebRequest
 MITRE Technique: T1105 – Ingress Tool Transfer
