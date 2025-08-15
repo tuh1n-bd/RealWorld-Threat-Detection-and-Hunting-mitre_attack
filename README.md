@@ -279,6 +279,9 @@ CommandLine="*powershell*"	Filters PowerShell executions
 table	Displays essential context fields
 sort - _time	Shows most recent events first
 ____
+###Image: 1.19, 1.26
+https://media.licdn.com/dms/image/v2/D5622AQELJ0dkY-fCAg/feedshare-shrink_1280/B56Ziui9LpHkAw-/0/1755275056471?e=1758153600&v=beta&t=3zuuUsTHkz2G1C0jprC2WEUbrEQS3Bjp5SwU_6hkfZQ
+--
 🔸 Detection 1.26 — Credential Dumping via Mimikatz
 MITRE Technique: T1003 – OS Credential Dumping
 --
