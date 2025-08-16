@@ -458,13 +458,8 @@ _________________________________________________________________
 <img width="1191" height="509" alt="mitre12" src="https://github.com/user-attachments/assets/ae874915-01f8-44af-88a0-a7c35125f830" />
 
 
-
-=================================================
-=================================================
-
-
-
 How to Use
+---
 Clone this repository:
 
 git clone https://github.com/tuh1n-bd/RealWorld-Threat-Detection-and-Hunting-mitre_attack.git
@@ -489,7 +484,7 @@ I am a cybersecurity enthusiast specializing in detection engineering and threat
 
 Contact
 For questions or collaboration, reach me at:
-Email: tuhin.teach@gmail.com
-GitHub: tuhinexpert
+Email: moglibd22@gmail.com
+GitHub: tuh1n-bd
 
 Thank you for visiting my repository!
