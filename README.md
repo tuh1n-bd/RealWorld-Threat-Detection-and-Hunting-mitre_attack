@@ -37,6 +37,8 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 | stats count by Account_Name, ComputerName, Source_IP, LogonType
 | sort - count
 
+<img width="1203" height="711" alt="mitre7" src="https://github.com/user-attachments/assets/b4270732-6107-41f8-97c2-0fd49ebacc6b" />
+
 🔹  Detection 1.2 – Multiple Failed Logon Attempts by Single Source IP
 MITRE Technique: [T1110] Brute Force
 Goal: Detect brute-force attacks from a single source IP attempting multiple logins.
@@ -72,6 +74,8 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv"
 | stats values(EventID) as event_list count(eval(EventID=4625)) as failed_attempts,
         count(eval(EventID=4624)) as success_count by Account_Name, Source_IP
 | where failed_attempts >= 3 AND success_count >= 1
+
+<img width="1209" height="700" alt="mitre2" src="https://github.com/user-attachments/assets/88a432b1-c4d8-44d4-a954-6ab6f9906aec" />
 
 🔹 Detection 1.4 — Privileged Logon Detection
 MITRE Technique: [T1078.002] Valid Accounts: Domain Accounts
@@ -149,6 +153,9 @@ index="sim1" sourcetype="cvs"
 | where unique_ips > 1
 | sort - unique_ips
 
+<img width="1215" height="708" alt="mitre4" src="https://github.com/user-attachments/assets/6125a307-3544-45d4-9735-7407b6e7fedb" />
+
+
 🔸 Detection 1.11 — Suspicious Use of Service Accounts
 📖 MITRE ATT&CK Mapping
 •	Technique: T1078.003 – Valid Accounts: Local Accounts
@@ -193,6 +200,9 @@ index="sim1" sourcetype="cvs"
 | where unique_hosts >= 3
 | sort - _time
 
+<img width="1201" height="706" alt="mitre5" src="https://github.com/user-attachments/assets/941a310f-bdbe-4682-a5a6-c36fafdb2f8d" />
+
+
 🔸 Detection 1.13 — Suspicious Use of Encoded Commands
 📖 MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
@@ -236,6 +246,9 @@ index="sim1" sourcetype="cvs"
 | table _time Account_Name ComputerName CommandLine MITRE_Technique
 | sort - _time
 
+<img width="1198" height="703" alt="mitre6" src="https://github.com/user-attachments/assets/510a7cad-d3ce-4ffb-b079-bff0760a9ae2" />
+
+
 🔸 Detection 1.16 — PowerShell Base64 Encoded Execution
 📖 MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
@@ -278,6 +291,9 @@ CommandLine="*powershell*"	Filters PowerShell executions
 *-enc* or *-encodedCommand*	Detects Base64-encoded payload usage
 table	Displays essential context fields
 sort - _time	Shows most recent events first
+
+<img width="1203" height="711" alt="mitre7" src="https://github.com/user-attachments/assets/251cd39e-76de-471e-b80d-73865e3fc580" />
+
 ____
 ###Image: 1.19, 1.26
 https://media.licdn.com/dms/image/v2/D5622AQELJ0dkY-fCAg/feedshare-shrink_1280/B56Ziui9LpHkAw-/0/1755275056471?e=1758153600&v=beta&t=3zuuUsTHkz2G1C0jprC2WEUbrEQS3Bjp5SwU_6hkfZQ
@@ -310,11 +326,11 @@ _____
 •	This detects powershell -enc, where encoded Base64 commands are run to hide the actual payload.
 •	Very common in phishing payloads and malware loaders.
 
+<img width="1204" height="717" alt="mitre8" src="https://github.com/user-attachments/assets/0eefc9a4-c3f8-468e-b673-ce8298dff3e6" />
+
 ### Image: 1.27 and 1.28
 https://media.licdn.com/dms/image/v2/D4E22AQE7BfiTzsmV6w/feedshare-shrink_2048_1536/B4EZiplkggGYAs-/0/1755191855853?e=1758153600&v=beta&t=ZCsBEgG3yjk-m9kdrWk7W4Ot_ZHTn6ukS2cQaXNe30w
 ---
-
-
 ____
 🔸 Detection 1.28 — Remote File Download via Invoke-WebRequest
 MITRE Technique: T1105 – Ingress Tool Transfer
@@ -342,6 +358,8 @@ ____
 •	cmd.exe /c tells Windows to run a command, then exit — often used for automation or obfuscated execution.
 •	Often paired with encoded PowerShell or scripting payloads.
 ___________
+<img width="1196" height="707" alt="mitre9" src="https://github.com/user-attachments/assets/630645bb-2126-46b2-853f-e3bd1de0e1d8" />
+
 ### Image: 1.33, 1.35
 https://media.licdn.com/dms/image/v2/D4E22AQGOeOq4c0fSbg/feedshare-shrink_1280/B4EZifgqgQGUAk-/0/1755022797670?e=1758153600&v=beta&t=Z-QAgthdES_RezGf2BZzkKrF4iuQRiFz6k0-IDd0azM
 --
@@ -371,6 +389,9 @@ ___
 •	Attackers use whoami to learn about the current user context after gaining access.
 •	This is useful for privilege escalation decisions.
 ___
+
+<img width="1198" height="707" alt="mitre10" src="https://github.com/user-attachments/assets/88d55361-764c-44ef-9c42-84c9908c94a7" />
+
 ### Image: 1.37, 1.40
 https://media.licdn.com/dms/image/v2/D4E22AQGRUyoDN-qqwA/feedshare-shrink_1280/B4EZijqsJwGYAk-/0/1755092534540?e=1758153600&v=beta&t=qxEBGDXkebBcVvTLmTGxqcl5wfjD6Rq7pA7sICXUyNI
 --
@@ -401,6 +422,9 @@ ____________________________________________________
 •	Attackers use encoded PowerShell to obfuscate commands.
 •	-enc or -encodedcommand is a red flag.
 ____________________
+
+<img width="1208" height="707" alt="mitre11" src="https://github.com/user-attachments/assets/6c9e07c5-9957-4026-9c05-272d6ffbb52d" />
+
 ###Image: 1.41, 1.47
 https://media.licdn.com/dms/image/v2/D4D22AQF_swgEUgiX8Q/feedshare-shrink_1280/B4DZiZ6FKiGkAo-/0/1754928797072?e=1758153600&v=beta&t=BipsVUx_gV-H-1nSmzkdY_ihHjQP3acQxCGqT_kTTes
 ----
@@ -431,15 +455,7 @@ _________________________________________________________________
 •	whoami is used by attackers to check the current user context, privilege level, or domain info.
 •	Often appears early in attack chains as recon.
 
-
-
-
-
-
-
-
-
-
+<img width="1191" height="509" alt="mitre12" src="https://github.com/user-attachments/assets/ae874915-01f8-44af-88a0-a7c35125f830" />
 
 
 
