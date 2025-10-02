@@ -1,0 +1,48 @@
+# savedsearches.conf.example
+
+[Detect_Brute_Force_1.2]
+search = index="sim1" sourcetype="cvs" EventID=4625 | stats count by Source_IP, Account_Name | where count >= 5
+cron_schedule = */5 * * * *
+disabled = 0
+alert.severity = 3
+alert.suppress = 0
+alert.track = 1
+action.email = 1
+action.email.to = soc-team@example.com
+action.email.subject = Splunk Alert: Brute Force Attempts Detected
+
+[Detect_PowerShell_Base64_1.19]
+search = index="sim1" sourcetype="cvs" CommandLine="*powershell*" (CommandLine="*-enc*" OR CommandLine="*-encodedCommand*") | table _time Account_Name ComputerName CommandLine
+cron_schedule = */10 * * * *
+disabled = 0
+alert.severity = 4
+action.email = 1
+action.email.to = soc-team@example.com
+action.email.subject = Splunk Alert: Encoded PowerShell Execution
+
+[Detect_Mimikatz_1.26]
+search = index="sim1" sourcetype="cvs" (CommandLine="*mimikatz*") | table _time Account_Name ComputerName CommandLine
+cron_schedule = */15 * * * *
+disabled = 0
+alert.severity = 5
+action.email = 1
+action.email.to = soc-team@example.com
+action.email.subject = Splunk Alert: Credential Dumping (Mimikatz)
+
+[Detect_Remote_File_Download_1.28]
+search = index="sim1" sourcetype="cvs" (CommandLine="*Invoke-WebRequest*" OR CommandLine="*certutil -decode*") | table _time Account_Name ComputerName CommandLine
+cron_schedule = */20 * * * *
+disabled = 0
+alert.severity = 4
+action.email = 1
+action.email.to = soc-team@example.com
+action.email.subject = Splunk Alert: Suspicious Remote File Download
+
+[Detect_Lateral_Movement_1.12]
+search = index="sim1" sourcetype="cvs" EventID=4624 LogonType=10 | stats values(ComputerName) as Hosts count by Account_Name | where mvcount(Hosts) > 3
+cron_schedule = */30 * * * *
+disabled = 0
+alert.severity = 4
+action.email = 1
+action.email.to = soc-team@example.com
+action.email.subject = Splunk Alert: Possible Lateral Movement Detected
