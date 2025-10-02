@@ -420,9 +420,7 @@ sort - _time	Shows most recent events first
 <img width="1203" height="711" alt="mitre7" src="https://github.com/user-attachments/assets/251cd39e-76de-471e-b80d-73865e3fc580" />
 
 ____
-Image: 1.19, 1.26
--
-https://media.licdn.com/dms/image/v2/D5622AQELJ0dkY-fCAg/feedshare-shrink_1280/B56Ziui9LpHkAw-/0/1755275056471?e=1758153600&v=beta&t=3zuuUsTHkz2G1C0jprC2WEUbrEQS3Bjp5SwU_6hkfZQ
+
 
  Detection 1.26 — Credential Dumping via Mimikatz
 MITRE Technique: T1003 – OS Credential Dumping
@@ -456,10 +454,6 @@ Explanation:
 
 <img width="1204" height="717" alt="mitre8" src="https://github.com/user-attachments/assets/0eefc9a4-c3f8-468e-b673-ce8298dff3e6" />
 
-Image: 1.27 and 1.28
---
-https://media.licdn.com/dms/image/v2/D4E22AQE7BfiTzsmV6w/feedshare-shrink_2048_1536/B4EZiplkggGYAs-/0/1755191855853?e=1758153600&v=beta&t=ZCsBEgG3yjk-m9kdrWk7W4Ot_ZHTn6ukS2cQaXNe30w
-
 ____
 Detection 1.28 — Remote File Download via Invoke-WebRequest
 MITRE Technique: T1105 – Ingress Tool Transfer
@@ -492,10 +486,7 @@ ___________
 
 <img width="1196" height="707" alt="mitre9" src="https://github.com/user-attachments/assets/630645bb-2126-46b2-853f-e3bd1de0e1d8" />
 
-Image: 1.33, 1.35
---
-https://media.licdn.com/dms/image/v2/D4E22AQGOeOq4c0fSbg/feedshare-shrink_1280/B4EZifgqgQGUAk-/0/1755022797670?e=1758153600&v=beta&t=Z-QAgthdES_RezGf2BZzkKrF4iuQRiFz6k0-IDd0azM
-
+_____________________________________________
 Detection 1.35 — Suspicious CommandLine Execution Involving Encoded Scripts
 MITRE Technique: T1059.001 – PowerShell
 --
@@ -528,9 +519,7 @@ ___
 
 <img width="1198" height="707" alt="mitre10" src="https://github.com/user-attachments/assets/88d55361-764c-44ef-9c42-84c9908c94a7" />
 
-Image: 1.37, 1.40
---
-https://media.licdn.com/dms/image/v2/D4E22AQGRUyoDN-qqwA/feedshare-shrink_1280/B4EZijqsJwGYAk-/0/1755092534540?e=1758153600&v=beta&t=qxEBGDXkebBcVvTLmTGxqcl5wfjD6Rq7pA7sICXUyNI
+______________________________________________
 
 Detection 1.40 — Use of Invoke-WebRequest in PowerShell
 MITRE Technique: T1105 – Ingress Tool Transfer
@@ -564,9 +553,7 @@ ____________________
 
 <img width="1208" height="707" alt="mitre11" src="https://github.com/user-attachments/assets/6c9e07c5-9957-4026-9c05-272d6ffbb52d" />
 
-Image: 1.41, 1.47
--
-https://media.licdn.com/dms/image/v2/D4D22AQF_swgEUgiX8Q/feedshare-shrink_1280/B4DZiZ6FKiGkAo-/0/1754928797072?e=1758153600&v=beta&t=BipsVUx_gV-H-1nSmzkdY_ihHjQP3acQxCGqT_kTTes
+________________________________________
 
 🔹 Detection 1.47 — Execution of Mimikatz
 MITRE Technique: T1003 – OS Credential Dumping
