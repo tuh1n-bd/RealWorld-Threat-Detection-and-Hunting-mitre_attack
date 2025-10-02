@@ -1,4 +1,4 @@
-[MITRE_dashboard.xml.txt](https://github.com/user-attachments/files/21716229/MITRE_dashboard.xml.txt)# RealWorld Threat Detection and Hunting — MITRE ATT&CK Splunk Detections
+ [MITRE_dashboard.xml.txt](https://github.com/user-attachments/files/21716229/MITRE_dashboard.xml.txt)# RealWorld Threat Detection and Hunting — MITRE ATT&CK Splunk Detections
 
 
 
@@ -139,7 +139,8 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 | sort - count
 ```
 
-<img width="1203" height="711" alt="mitre7" src="https://github.com/user-attachments/assets/b4270732-6107-41f8-97c2-0fd49ebacc6b" />
+<img width="1117" height="850" alt="1 1 and 1 2_ mitre" src="https://github.com/user-attachments/assets/c937635e-9e54-42dc-b742-451ee96bf0c8" />
+
 
  Detection 1.2 – Multiple Failed Logon Attempts by Single Source IP
 MITRE Technique: [T1110] Brute Force
