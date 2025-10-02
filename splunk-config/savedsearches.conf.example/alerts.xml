@@ -1,1 +1,53 @@
+<!-- alerts.xml -->
+<alerts>
+  <alert>
+    <name>Detect_Brute_Force_1.2</name>
+    <search>index="sim1" sourcetype="cvs" EventID=4625 | stats count by Source_IP, Account_Name | where count &gt;= 5</search>
+    <cron>*/5 * * * *</cron>
+    <severity>3</severity>
+    <actions>
+      <email to="soc-team@example.com" subject="Splunk Alert: Brute Force Attempts Detected" />
+    </actions>
+  </alert>
+
+  <alert>
+    <name>Detect_PowerShell_Base64_1.19</name>
+    <search>index="sim1" sourcetype="cvs" CommandLine="*powershell*" (CommandLine="*-enc*" OR CommandLine="*-encodedCommand*") | table _time Account_Name ComputerName CommandLine</search>
+    <cron>*/10 * * * *</cron>
+    <severity>4</severity>
+    <actions>
+      <email to="soc-team@example.com" subject="Splunk Alert: Encoded PowerShell Execution" />
+    </actions>
+  </alert>
+
+  <alert>
+    <name>Detect_Mimikatz_1.26</name>
+    <search>index="sim1" sourcetype="cvs" (CommandLine="*mimikatz*") | table _time Account_Name ComputerName CommandLine</search>
+    <cron>*/15 * * * *</cron>
+    <severity>5</severity>
+    <actions>
+      <email to="soc-team@example.com" subject="Splunk Alert: Credential Dumping (Mimikatz)" />
+    </actions>
+  </alert>
+
+  <alert>
+    <name>Detect_Remote_File_Download_1.28</name>
+    <search>index="sim1" sourcetype="cvs" (CommandLine="*Invoke-WebRequest*" OR CommandLine="*certutil -decode*") | table _time Account_Name ComputerName CommandLine</search>
+    <cron>*/20 * * * *</cron>
+    <severity>4</severity>
+    <actions>
+      <email to="soc-team@example.com" subject="Splunk Alert: Suspicious Remote File Download" />
+    </actions>
+  </alert>
+
+  <alert>
+    <name>Detect_Lateral_Movement_1.12</name>
+    <search>index="sim1" sourcetype="cvs" EventID=4624 LogonType=10 | stats values(ComputerName) as Hosts count by Account_Name | where mvcount(Hosts) &gt; 3</search>
+    <cron>*/30 * * * *</cron>
+    <severity>4</severity>
+    <actions>
+      <email to="soc-team@example.com" subject="Splunk Alert: Possible Lateral Movement Detected" />
+    </actions>
+  </alert>
+</alerts>
 
