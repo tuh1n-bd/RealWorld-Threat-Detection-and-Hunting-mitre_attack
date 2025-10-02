@@ -1,5 +1,10 @@
  [MITRE_dashboard.xml.txt](https://github.com/user-attachments/files/21716229/MITRE_dashboard.xml.txt)# RealWorld Threat Detection and Hunting — MITRE ATT&CK Splunk Detections
 
+## "Why this matters"
+#### [This project shows my ability to engineer detections mapped to MITRE ATT&CK, operationalize them in Splunk, and present results in dashboards and alerts — the same skills required for SOC Analysts and Detection Engineers.]
+
+
+<img width="1142" height="914" alt="dashboard_mitre" src="https://github.com/user-attachments/assets/83613703-a300-4de2-a040-4b08f2bf955b" />
 
 
 
@@ -161,7 +166,7 @@ EventID=4625
 | sort - count
 ```
 
-🔹 Detection 1.3 — Successful Logon After Multiple Failures
+Detection 1.3 — Successful Logon After Multiple Failures
 MITRE Technique: [T1110] Brute Force → Credential Access
 Goal: Detect cases where a user had multiple failed logon attempts followed by a successful one — indicating possible password guessing success.
 --
@@ -205,7 +210,7 @@ EventID=4624 AND ElevatedPrivileges="Yes"
 | stats count by Account_Name, Source_IP, ComputerName, LogonType
 ```
 
-🔹 Detection 1.5 — Rare User Logon Detection
+Detection 1.5 — Rare User Logon Detection
 MITRE Technique: [T1078] Valid Accounts
 Goal: Identify user accounts that log in very rarely, which could indicate account compromise, misuse, or initial foothold.
 ----
@@ -226,7 +231,7 @@ index="sim1" sourcetype="cvs" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 | sort count
 ```
 
-🔹 Detection 1.7 — Multiple Failed Logons Followed by Success
+Detection 1.7 — Multiple Failed Logons Followed by Success
 MITRE ATT&CK Technique: [T1110] Brute Force
 Objective: Detect brute force attempts — several failed login attempts followed closely by a successful login from the same IP and user.
 ---
@@ -294,8 +299,8 @@ index="sim1" sourcetype="cvs"
 | stats count BY Account_Name, ComputerName, Source_IP
 | sort - count
 ```
-🔸 Detection 1.12 — Multiple Hosts Accessed by Same User in Short Time
-📖 MITRE ATT&CK Mapping
+Detection 1.12 — Multiple Hosts Accessed by Same User in Short Time
+ MITRE ATT&CK Mapping
 •	Technique: T1021 – Remote Services
 •	Tactic: Lateral Movement
 ---
@@ -394,8 +399,8 @@ CommandLine="*-enc*"	Targets the -enc or -encodedCommand flag, which is used to 
 table	Filters output to the essential fields
 sort - _time	Shows the most recent events first
 
-🔸 Detection 1.19 — PowerShell Base64 Encoded Commands
-📖 MITRE ATT&CK Mapping
+Detection 1.19 — PowerShell Base64 Encoded Commands
+MITRE ATT&CK Mapping
 •	Technique: T1059.001 – Command and Scripting Interpreter: PowerShell
 •	Tactic: Execution
 ---
@@ -555,7 +560,7 @@ ____________________
 
 ________________________________________
 
-🔹 Detection 1.47 — Execution of Mimikatz
+Detection 1.47 — Execution of Mimikatz
 MITRE Technique: T1003 – OS Credential Dumping
 --
 ____________________
@@ -571,7 +576,7 @@ Explanation:
 •	Any execution of mimikatz.exe should raise high-priority alerts
 
 
-🔹 Detection 1.50 — Use of whoami Command (Reconnaissance)
+Detection 1.50 — Use of whoami Command (Reconnaissance)
 MITRE Technique: T1033 – System Owner/User Discovery
 --
 ________________________________________________________
